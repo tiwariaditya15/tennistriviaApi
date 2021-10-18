@@ -6,24 +6,24 @@ const prisma = new PrismaClient();
 export const getScores = async (req: Request, res: Response) => {
   try {
     const { userId } = req;
+    // await prisma.score.deleteMany({});
     const scores = await prisma.score.findMany({
       where: {
         playerId: userId,
       },
     });
     if (scores.length) {
-      return res
-        .status(200)
-        .json({
-          scores: scores.map((el) => ({
-            score: el.score,
-            category: el.category,
-          })),
-        });
+      return res.status(200).json({
+        scores: scores.map((el) => ({
+          id: el.id,
+          score: el.score,
+          category: el.category,
+        })),
+      });
     }
     res
-      .status(404)
-      .json({ errorMessage: "This user hasn't played any games." });
+      .status(200)
+      .json({ scores: [], message: "This user hasn't played any games." });
   } catch (error) {
     console.log({ error });
     res.status(500).json({ error });
